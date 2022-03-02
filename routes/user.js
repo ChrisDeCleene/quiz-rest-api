@@ -29,7 +29,7 @@ module.exports = (app) => {
    *  get:
    *    tags:
    *      - User/Scores
-   *    description: Returns user information
+   *    description: Returns user information. *Registered users only*
    *    produces:
    *      - application/json
    *    responses:

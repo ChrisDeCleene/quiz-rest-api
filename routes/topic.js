@@ -33,7 +33,7 @@ module.exports = (app) => {
    *  get:
    *    tags:
    *      - Topics
-   *    description: Returns all topics
+   *    description: Returns all topics. *Registered users only*
    *    produces:
    *      - application/json
    *    responses:
@@ -68,7 +68,7 @@ module.exports = (app) => {
    *  get:
    *    tags:
    *      - Topics
-   *    description: Returns all questions for the given topic
+   *    description: Returns all questions for the given topic. *Registered users only*
    *    produces:
    *      - application/json
    *    parameters:

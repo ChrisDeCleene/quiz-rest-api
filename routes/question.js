@@ -45,7 +45,7 @@ module.exports = (app) => {
    *  get:
    *    tags:
    *      - Questions
-   *    description: Returns all questions
+   *    description: Returns all questions. *Registered users only*
    *    produces:
    *      - application/json
    *    responses:
@@ -70,60 +70,7 @@ module.exports = (app) => {
    *  post:
    *    tags:
    *      - Questions
-   *    description: Creates a new question
-   *    produces:
-   *      - application/json
-   *    parameters:
-   *      - name: question
-   *        description: Question object
-   *        in: body
-   *        required: true
-   *        schema:
-   *          $ref: '#/definitions/Question'
-   *    responses:
-   *      201:
-   *        description: Successfully created
-   *        schema:
-   *          $ref: "#/definitions/Question"
-   */
-
-  /**
-   * @swagger
-   * /api/questions/{id}:
-   *  get:
-   *    tags:
-   *      - Questions
-   *    description: Returns a single question
-   *    produces:
-   *      - application/json
-   *    parameters:
-   *      - name: id
-   *        description: Question's id
-   *        in: path
-   *        required: true
-   *        type: string
-   *    responses:
-   *      200:
-   *        description: Returns an object with a question parameter containing a single question.
-   *        schema:
-   *          $ref: "#/definitions/Question"
-   */
-  router.get("/:id", isAuth, async (req, res, next) => {
-    const question = await QuestionModel.findById(req.params.id);
-    if (!question) {
-      return res.sendStatus(404);
-    } else {
-      return res.send({ question });
-    }
-  });
-
-  /**
-   * @swagger
-   * /api/questions:
-   *  post:
-   *    tags:
-   *      - Questions
-   *    description: Creates a new question
+   *    description: Creates a new question. *ADMIN ONLY*
    *    produces:
    *      - application/json
    *    parameters:
@@ -154,10 +101,40 @@ module.exports = (app) => {
   /**
    * @swagger
    * /api/questions/{id}:
+   *  get:
+   *    tags:
+   *      - Questions
+   *    description: Returns a single question. *Registered users only*
+   *    produces:
+   *      - application/json
+   *    parameters:
+   *      - name: id
+   *        description: Question's id
+   *        in: path
+   *        required: true
+   *        type: string
+   *    responses:
+   *      200:
+   *        description: Returns an object with a question parameter containing a single question.
+   *        schema:
+   *          $ref: "#/definitions/Question"
+   */
+  router.get("/:id", isAuth, async (req, res, next) => {
+    const question = await QuestionModel.findById(req.params.id);
+    if (!question) {
+      return res.sendStatus(404);
+    } else {
+      return res.send({ question });
+    }
+  });
+
+  /**
+   * @swagger
+   * /api/questions/{id}:
    *  put:
    *    tags:
    *      - Questions
-   *    description: Updates an existing question
+   *    description: Updates an existing question. *ADMIN ONLY*
    *    produces:
    *      - application/json
    *    parameters:
@@ -206,7 +183,7 @@ module.exports = (app) => {
    *  delete:
    *    tags:
    *      - Questions
-   *    description: Deletes an existing question
+   *    description: Deletes an existing question. *ADMIN ONLY*
    *    produces:
    *      - application/json
    *    parameters:

@@ -3,7 +3,46 @@ const { isAdmin, isAuth } = require("../lib/authMiddleware");
 const router = express.Router({ mergeParams: true });
 const ScoreModel = require("../models/score");
 
-// Get all scores for a user
+/**
+ * @swagger
+ * definitions:
+ *  Score:
+ *    type: object
+ *    properties:
+ *      userId:
+ *        type: string
+ *      questionId:
+ *        type: string
+ *      isCorrect:
+ *        type: boolean
+ */
+
+/**
+ * @swagger
+ * /api/user/scores:
+ *  get:
+ *    tags:
+ *      - User/Scores
+ *    description: Returns all scores for the requesting user. *Registered users only*
+ *    produces:
+ *      - application/json
+ *    responses:
+ *      200:
+ *        description: An object with an array of all scores
+ *        schema:
+ *            type: object
+ *            properties:
+ *              scores:
+ *                type: array
+ *                items:
+ *                  $ref: "#/definitions/Score"
+ *              success:
+ *                type: boolean
+ *              status_code:
+ *                type: integer
+ *              status_message:
+ *                type: string
+ */
 router.get("/", isAuth, async (req, res, next) => {
   const userId = req.user.id;
   const scores = await ScoreModel.find({ userId });
@@ -15,7 +54,28 @@ router.get("/", isAuth, async (req, res, next) => {
   });
 });
 
-// Record a score
+  /**
+   * @swagger
+   * /api/user/scores:
+   *  post:
+   *    tags:
+   *      - User/Scores
+   *    description: Creates a new score for the logged in user. *Registered users only*
+   *    produces:
+   *      - application/json
+   *    parameters:
+   *      - name: score
+   *        description: Score object
+   *        in: body
+   *        required: true
+   *        schema:
+   *          $ref: '#/definitions/Score'
+   *    responses:
+   *      201:
+   *        description: Successfully created
+   *        schema:
+   *          $ref: "#/definitions/Score"
+   */
 router.post("/", isAuth, async (req, res, next) => {
   const userId = req.user.id;
   const questionId = req.body.questionId;
@@ -34,8 +94,26 @@ router.post("/", isAuth, async (req, res, next) => {
   });
 });
 
-// Record a score
-router.delete("/:scoreId", isAdmin, async (req, res, next) => {
+  /**
+   * @swagger
+   * /api/user/scores/{id}:
+   *  delete:
+   *    tags:
+   *      - User/Scores
+   *    description: Deletes an existing score. *ADMIN ONLY*
+   *    produces:
+   *      - application/json
+   *    parameters:
+   *      - name: id
+   *        description: Score id
+   *        in: path
+   *        required: true
+   *        type: string
+   *    responses:
+   *      204:
+   *        description: Successfully deleted
+   */
+  router.delete("/:scoreId", isAdmin, async (req, res, next) => {
   const scoreId = req.params.scoreId;
   await ScoreModel.findByIdAndDelete(scoreId).then((score) => {
     res.status(204).json({
