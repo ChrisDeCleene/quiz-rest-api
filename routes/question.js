@@ -14,15 +14,29 @@ module.exports = (app) => {
    *    properties:
    *      question:
    *        type: string
+   *        example: Which is the correct answer?
    *      answers:
    *        type: array
-   *        answers:
-   *          type: string
+   *        items:
+   *          type: array
+   *          items:
+   *            - type: string
+   *            - type: integer
+   *          example:
+   *            - [this is an incorrect answer, 0]
+   *            - [this is also an incorrect answer, 0]
+   *            - [this is a correct answer, 1]
    *      topics:
    *        type: array
-   *        properties:
-   *          topic:
-   *            type: string
+   *        items:
+   *          type: string
+   *        example:
+   *          - random
+   *          - temporary
+   *          - beginner
+   *      type:
+   *        type: string
+   *        example: multiple-choice
    */
 
   /**
@@ -36,14 +50,42 @@ module.exports = (app) => {
    *      - application/json
    *    responses:
    *      200:
-   *        description: An array of questions
+   *        description: An object with an array of all questions
    *        schema:
-   *          $ref: "#/definitions/Question"
+   *            type: object
+   *            properties:
+   *              questions:
+   *                type: array
+   *                items:
+   *                  $ref: "#/definitions/Question"
    */
   router.get("/", isAuth, async (req, res, next) => {
     const questions = await QuestionModel.find();
     res.send({ questions });
   });
+
+  /**
+   * @swagger
+   * /api/questions:
+   *  post:
+   *    tags:
+   *      - Questions
+   *    description: Creates a new question
+   *    produces:
+   *      - application/json
+   *    parameters:
+   *      - name: question
+   *        description: Question object
+   *        in: body
+   *        required: true
+   *        schema:
+   *          $ref: '#/definitions/Question'
+   *    responses:
+   *      201:
+   *        description: Successfully created
+   *        schema:
+   *          $ref: "#/definitions/Question"
+   */
 
   /**
    * @swagger
@@ -62,7 +104,7 @@ module.exports = (app) => {
    *        type: string
    *    responses:
    *      200:
-   *        description: A single question
+   *        description: Returns an object with a question parameter containing a single question.
    *        schema:
    *          $ref: "#/definitions/Question"
    */
@@ -119,6 +161,11 @@ module.exports = (app) => {
    *    produces:
    *      - application/json
    *    parameters:
+   *      - name: id
+   *        description: Question's id
+   *        in: path
+   *        required: true
+   *        type: string
    *      - name: question
    *        description: Question object
    *        in: body
@@ -126,8 +173,8 @@ module.exports = (app) => {
    *        schema:
    *          $ref: '#/definitions/Question'
    *    responses:
-   *      201:
-   *        description: Successfully updated
+   *      200:
+   *        description: Returns the updated question object
    *        schema:
    *          $ref: "#/definitions/Question"
    */
@@ -163,17 +210,14 @@ module.exports = (app) => {
    *    produces:
    *      - application/json
    *    parameters:
-   *      - name: question
-   *        description: Question object
-   *        in: body
+   *      - name: id
+   *        description: Question's id
+   *        in: path
    *        required: true
-   *        schema:
-   *          $ref: '#/definitions/Question'
+   *        type: string
    *    responses:
-   *      201:
+   *      204:
    *        description: Successfully deleted
-   *        schema:
-   *          $ref: "#/definitions/Question"
    */
   router.delete("/:id", isAdmin, async (req, res, next) => {
     try {
