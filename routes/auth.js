@@ -1,4 +1,5 @@
 const express = require("express");
+const { session } = require("passport");
 const { genPassword } = require("../lib/passwordUtil");
 const UserModel = require("../models/user");
 const router = express.Router();
@@ -19,7 +20,7 @@ module.exports = (app, passport) => {
       salt,
       firstName,
       lastName,
-      admin: true,
+      admin: false,
       createdAt: new Date(),
       modifiedAt: new Date(),
     });
@@ -28,32 +29,58 @@ module.exports = (app, passport) => {
       .save()
       .then((user) => {
         console.log(user);
-        res.status(201).send("You are now registered. Please login.");
+        res.status(201).json({
+          success: true,
+          status_code: 201,
+          status_message: "You are now registered. Please login.",
+        });
       })
       .catch((err) => {
         console.log(err);
+        res.status(404).json({
+          success: false,
+          status_code: 404,
+          status_message:
+            "Error registering. User may already exist. Please try again",
+        });
       });
   });
 
   router.post(
     "/login",
-    passport.authenticate("local", {
-      failureRedirect: "/auth/login-failure",
-      successRedirect: "/auth/login-success",
-    })
+    passport.authenticate("local"),
+    // passport.authenticate("local", {
+    //   failureRedirect: "/auth/login-failure",
+    //   successRedirect: "/auth/login-success",
+    // }),
+    (req, res, next) => {
+      res.json({
+        userId: req.user.id,
+        success: true,
+        status_message: "You are now logged in!",
+      });
+    }
   );
 
   // Visiting this route logs the user out
   router.get("/logout", (req, res, next) => {
     req.logout();
-    res.send("You are now logged out!");
+    res.json({ success: true, status_message: "You are now logged out!" });
   });
 
   router.get("/login-success", (req, res, next) => {
-    res.send("You are logged in!");
+    console.log(req.session);
+    res.json({
+      success: true,
+      // TODO: Send some sort of token or session id back!! @ChrisDeCleene
+      status_message: "You are logged in!",
+    });
   });
 
   router.get("/login-failure", (req, res, next) => {
-    res.send("You entered the wrong password.");
+    res.status(404).json({
+      status_code: 404,
+      status_message: "You entered the wrong password.",
+    });
   });
 };
