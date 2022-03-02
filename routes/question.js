@@ -1,5 +1,5 @@
 const express = require("express");
-const { isAuth } = require("../lib/authMiddleware");
+const { isAuth, isAdmin } = require("../lib/authMiddleware");
 const QuestionModel = require("../models/question");
 const router = express.Router();
 
@@ -40,7 +40,7 @@ module.exports = (app) => {
    *        schema:
    *          $ref: "#/definitions/Question"
    */
-  router.get("/", async (req, res, next) => {
+  router.get("/", isAuth, async (req, res, next) => {
     const questions = await QuestionModel.find();
     res.send({ questions });
   });
@@ -66,7 +66,7 @@ module.exports = (app) => {
    *        schema:
    *          $ref: "#/definitions/Question"
    */
-  router.get("/:id", async (req, res, next) => {
+  router.get("/:id", isAuth, async (req, res, next) => {
     const question = await QuestionModel.findById(req.params.id);
     if (!question) {
       return res.sendStatus(404);
@@ -97,7 +97,7 @@ module.exports = (app) => {
    *        schema:
    *          $ref: "#/definitions/Question"
    */
-  router.post("/", isAuth, async (req, res, next) => {
+  router.post("/", isAdmin, async (req, res, next) => {
     try {
       const questionResponse = new QuestionModel(req.body);
       console.log(questionResponse);
@@ -131,7 +131,7 @@ module.exports = (app) => {
    *        schema:
    *          $ref: "#/definitions/Question"
    */
-  router.put("/:id", isAuth, async (req, res, next) => {
+  router.put("/:id", isAdmin, async (req, res, next) => {
     const { question, answers, topics, type } = req.body;
     try {
       const newQuestion = await QuestionModel.findByIdAndUpdate(
@@ -175,7 +175,7 @@ module.exports = (app) => {
    *        schema:
    *          $ref: "#/definitions/Question"
    */
-  router.delete("/:id", isAuth, async (req, res, next) => {
+  router.delete("/:id", isAdmin, async (req, res, next) => {
     try {
       const questionResponse = await QuestionModel.findByIdAndDelete(
         req.params.id
