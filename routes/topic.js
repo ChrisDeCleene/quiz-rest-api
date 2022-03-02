@@ -32,15 +32,25 @@ module.exports = (app) => {
    * /api/topics:
    *  get:
    *    tags:
-   *      - Questions
+   *      - Topics
    *    description: Returns all topics
    *    produces:
    *      - application/json
    *    responses:
    *      200:
-   *        description: An array of topic names
+   *        description: An array of all unique topic names
    *        schema:
-   *          $ref: "#/definitions/Question"
+   *          topic: object
+   *          properties:
+   *            topics:
+   *              type: array
+   *              items:
+   *                type: string
+   *              example:
+   *                - javascript
+   *                - html
+   *                - sql
+   *                - beginner
    */
   router.get("/", isAuth, async (req, res, next) => {
     QuestionModel.collection.distinct("topics", (error, topics) => {
@@ -57,21 +67,26 @@ module.exports = (app) => {
    * /api/topics/{topicName}:
    *  get:
    *    tags:
-   *      - Questions
+   *      - Topics
    *    description: Returns all questions for the given topic
    *    produces:
    *      - application/json
    *    parameters:
-   *      - name: id
-   *        description: Question's id
+   *      - name: topicName
+   *        description: Topic's name
    *        in: path
    *        required: true
    *        type: string
    *    responses:
    *      200:
-   *        description: An array of questions
+   *        description: An object with an array of questions for the topic
    *        schema:
-   *          $ref: "#/definitions/Question"
+   *            type: object
+   *            properties:
+   *              questions:
+   *                type: array
+   *                items:
+   *                  $ref: "#/definitions/Question"
    */
   router.get("/:topicName", isAuth, async (req, res, next) => {
     const questions = await QuestionModel.find({
