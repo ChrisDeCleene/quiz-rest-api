@@ -7,6 +7,40 @@ const scoresRouter = require("./score");
 module.exports = (app) => {
   app.use("/api/user", router);
 
+  /**
+   * @swagger
+   * definitions:
+   *  UserInfo:
+   *    type: object
+   *    properties:
+   *      id:
+   *        type: string
+   *      email:
+   *        type: string
+   *      firstName:
+   *        type: string
+   *      lastName:
+   *        type: string
+   */
+
+  /**
+   * @swagger
+   * /api/user:
+   *  get:
+   *    tags:
+   *      - User/Scores
+   *    description: Returns user information
+   *    produces:
+   *      - application/json
+   *    responses:
+   *      200:
+   *        description: Successfully logged out
+   *        schema:
+   *          type: object
+   *          properties:
+   *            user:
+   *              $ref: "#/definitions/UserInfo"
+   */
   router.get("/", isAuth, async (req, res, next) => {
     const user = await UserModel.findById(req.user.id, {
       email: 1,
