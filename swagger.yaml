@@ -1,0 +1,109 @@
+openapi: 3.0.0
+
+info:
+  title: CB-Code Quiz REST API
+  description: A simple rest api for coding quizzes
+  version: 1.0.0
+  contact:
+    email: creditcardchristopher@gmail.com
+
+servers:
+  - url: http://localhost:3000/
+    description: Staging server for testing
+
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user.
+      description: Register a new user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        201:
+          description: 201 Success
+          schema:
+            type: object
+            items:
+        409:
+          description: 409 Conflict
+          schema:
+            type: object
+            items:
+        500:
+          description: 500 Internal Server Error
+          schema:
+            type: object
+            items:
+  /auth/login:
+    post:
+      summary: Login as registered user.
+      description: Login as registered user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        201:
+          description: 201 Success
+          schema:
+            type: object
+            items:
+        401:
+          description: 401 Incorrect username or password
+          schema:
+            type: object
+            items:
+        500:
+          description: 500 Internal Server Error
+          schema:
+            type: object
+            items:
+
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          required: true
+        password:
+          type: string
+          required: true
+        firstName:
+          type: string
+        lastName:
+          type: string
+    Topic:
+      title: A JSON object containing topic information
+      description: A JSON object containing topic information
+      type: object
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+    Question:
+      title: A JSON object containing question information
+      description: A JSON object containing question information
+      type: object
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              question:
+                type: string
+              answers:
+                type: array
