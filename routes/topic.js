@@ -4,7 +4,7 @@ const QuestionModel = require("../models/question");
 const router = express.Router();
 
 module.exports = (app) => {
-  app.use("/topics", router);
+  app.use("/api/topics", router);
 
   /**
    * @swagger
@@ -29,7 +29,7 @@ module.exports = (app) => {
 
   /**
    * @swagger
-   * /topics:
+   * /api/topics:
    *  get:
    *    tags:
    *      - Questions
@@ -42,22 +42,19 @@ module.exports = (app) => {
    *        schema:
    *          $ref: "#/definitions/Question"
    */
-  router.get("/", async (req, res, next) => {
-    await QuestionModel.collection.distinct(
-      "topics",
-      (error, topics) => {
-        if (error) {
-          throw new Error(error);
-        } else {
-          res.send({ topics });
-        }
+  router.get("/", isAuth, async (req, res, next) => {
+    QuestionModel.collection.distinct("topics", (error, topics) => {
+      if (error) {
+        throw new Error(error);
+      } else {
+        res.send({ topics });
       }
-    );
+    });
   });
 
   /**
    * @swagger
-   * /topics/{topicName}:
+   * /api/topics/{topicName}:
    *  get:
    *    tags:
    *      - Questions
@@ -76,16 +73,14 @@ module.exports = (app) => {
    *        schema:
    *          $ref: "#/definitions/Question"
    */
-  router.get("/:topicName", async (req, res, next) => {
-    console.log(req.params.topicName)
-    const topic = await QuestionModel.find({
+  router.get("/:topicName", isAuth, async (req, res, next) => {
+    const questions = await QuestionModel.find({
       topics: { $in: [req.params.topicName] },
     });
-    if (!topic) {
+    if (!questions) {
       return res.sendStatus(404);
     } else {
-      return res.send({ topic });
+      return res.send({ questions });
     }
   });
-
 };

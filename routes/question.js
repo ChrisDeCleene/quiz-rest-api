@@ -4,22 +4,20 @@ const QuestionModel = require("../models/question");
 const router = express.Router();
 
 module.exports = (app) => {
-  app.use("/questions", router);
+  app.use("/api/questions", router);
 
   /**
    * @swagger
    * definitions:
    *  Question:
+   *    type: object
    *    properties:
    *      question:
    *        type: string
    *      answers:
    *        type: array
-   *        properties:
-   *          answer:
-   *            type: string
-   *          isCorrect:
-   *            type: boolean
+   *        answers:
+   *          type: string
    *      topics:
    *        type: array
    *        properties:
@@ -29,7 +27,7 @@ module.exports = (app) => {
 
   /**
    * @swagger
-   * /questions:
+   * /api/questions:
    *  get:
    *    tags:
    *      - Questions
@@ -49,7 +47,7 @@ module.exports = (app) => {
 
   /**
    * @swagger
-   * /questions/{id}:
+   * /api/questions/{id}:
    *  get:
    *    tags:
    *      - Questions
@@ -79,7 +77,7 @@ module.exports = (app) => {
 
   /**
    * @swagger
-   * /questions/:
+   * /api/questions:
    *  post:
    *    tags:
    *      - Questions
@@ -111,6 +109,28 @@ module.exports = (app) => {
     }
   });
 
+  /**
+   * @swagger
+   * /api/questions/{id}:
+   *  put:
+   *    tags:
+   *      - Questions
+   *    description: Updates an existing question
+   *    produces:
+   *      - application/json
+   *    parameters:
+   *      - name: question
+   *        description: Question object
+   *        in: body
+   *        required: true
+   *        schema:
+   *          $ref: '#/definitions/Question'
+   *    responses:
+   *      201:
+   *        description: Successfully updated
+   *        schema:
+   *          $ref: "#/definitions/Question"
+   */
   router.put("/:id", isAuth, async (req, res, next) => {
     const { question, answers, topics, type } = req.body;
     try {
@@ -133,6 +153,28 @@ module.exports = (app) => {
     }
   });
 
+  /**
+   * @swagger
+   * /api/questions/{id}:
+   *  delete:
+   *    tags:
+   *      - Questions
+   *    description: Deletes an existing question
+   *    produces:
+   *      - application/json
+   *    parameters:
+   *      - name: question
+   *        description: Question object
+   *        in: body
+   *        required: true
+   *        schema:
+   *          $ref: '#/definitions/Question'
+   *    responses:
+   *      201:
+   *        description: Successfully deleted
+   *        schema:
+   *          $ref: "#/definitions/Question"
+   */
   router.delete("/:id", isAuth, async (req, res, next) => {
     try {
       const questionResponse = await QuestionModel.findByIdAndDelete(
