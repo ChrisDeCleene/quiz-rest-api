@@ -12,8 +12,7 @@ module.exports = async (app) => {
 
   routesLoader(app, passport);
 
-  // Load Swagger
-  await swaggerLoader(app);
+  swaggerLoader(app);
 
   app.use(errorhandler);
 };
