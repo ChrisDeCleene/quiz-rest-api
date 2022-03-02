@@ -1,10 +1,11 @@
 const express = require("express");
-const { isAdmin, isUser } = require("../lib/authMiddleware");
+const { isAdmin, isAuth } = require("../lib/authMiddleware");
 const router = express.Router({ mergeParams: true });
 const ScoreModel = require("../models/score");
 
-router.get("/", isUser, async (req, res, next) => {
-  const userId = req.params.userId;
+// Get all scores for a user
+router.get("/", isAuth, async (req, res, next) => {
+  const userId = req.user.id;
   const scores = await ScoreModel.find({ userId });
   res.json({
     success: true,
@@ -15,8 +16,8 @@ router.get("/", isUser, async (req, res, next) => {
 });
 
 // Record a score
-router.post("/", isUser, async (req, res, next) => {
-  const userId = req.params.userId;
+router.post("/", isAuth, async (req, res, next) => {
+  const userId = req.user.id;
   const questionId = req.body.questionId;
   const isCorrect = req.body.isCorrect;
   const score = await ScoreModel({
