@@ -55,8 +55,8 @@ module.exports = (app, passport) => {
     // }),
     (req, res, next) => {
       res.json({
-        userId: req.user.id,
         success: true,
+        status_code: 200,
         status_message: "You are now logged in!",
       });
     }
@@ -65,22 +65,10 @@ module.exports = (app, passport) => {
   // Visiting this route logs the user out
   router.get("/logout", (req, res, next) => {
     req.logout();
-    res.json({ success: true, status_message: "You are now logged out!" });
-  });
-
-  router.get("/login-success", (req, res, next) => {
-    console.log(req.session);
     res.json({
       success: true,
-      // TODO: Send some sort of token or session id back!! @ChrisDeCleene
-      status_message: "You are logged in!",
-    });
-  });
-
-  router.get("/login-failure", (req, res, next) => {
-    res.status(404).json({
-      status_code: 404,
-      status_message: "You entered the wrong password.",
+      status_code: 200,
+      status_message: "You are now logged out!",
     });
   });
 };
