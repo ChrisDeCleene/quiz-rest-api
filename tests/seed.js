@@ -1,15 +1,18 @@
 const QuestionModel = require("../models/question");
 const UserModel = require("../models/user");
 const ScoreModel = require("../models/score");
+const { genPassword } = require("../lib/passwordUtil");
 
 // Function for creating and accessing a user
 const createUser = async (email) => {
+  const {salt, hash} = genPassword("!password")
   const userObject = {
     email: email || "test@test.com",
-    password: "!password",
+    salt,
+    hash,
     firstName: "Testy",
     lastName: "Test",
-    userType: "Student",
+    admin: true,
     createdAt: new Date(),
     modifiedAt: new Date(),
   };
@@ -45,7 +48,7 @@ const createScore = async (userId, questionId) => {
   const scoreObject = {
     userId,
     questionId,
-    isCorrect: false,
+    isCorrect: true,
   };
 
   const scoreResponse = new ScoreModel(scoreObject);
