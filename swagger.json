@@ -9,7 +9,7 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "https://decleene-quiz-api.herokuapp.com/",
+  "host": "https://decleene-quiz-api.herokuapp.com",
   "basePath": "/api",
   "tags": [
     {
