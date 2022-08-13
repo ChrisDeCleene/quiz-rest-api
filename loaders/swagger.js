@@ -9,7 +9,7 @@ module.exports = (app) => {
       description:
         "An API for creating and interacting with questions and topics.",
     },
-    host: "localhost:5000",
+    host: "https://decleene-quiz-api.herokuapp.com/",
     basePath: "/",
   };
 
